@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import JsonPage from "./jsonPage";
 
-export default function Ahmed() {
+export default function Index() {
   // TODO: replace the local server with a cloud infra, maybe render.com
   const fetchDataFromServer: any = async () => {
     try {
