@@ -10,16 +10,10 @@ app.use(cors());
 
 // send your own data, the data sent is represented as a JS Object
 app.get("/", (req, res) => {
+  console.log("Got a request from:", req.headers.origin);
+
   const data = { key: "Ahmed", id: 1 };
   res.send(data);
-});
-
-app.get("/test", (req, res) => {
-  try {
-    res.send("Wow!");
-  } catch (error) {
-    console.log("err");
-  }
 });
 
 // ignore this, testing if it's possible to send
