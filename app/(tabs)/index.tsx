@@ -1,8 +1,10 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import JsonPage from "./jsonPage";
+import { Pressable, StyleSheet, Text, Touchable, TouchableHighlight, View } from "react-native";
+import { useEffect, useState } from "react";
 
 export default function Index() {
   // TODO: replace the local server with a cloud infra, maybe render.com
+  const [data, setData] = useState("");
+
   const fetchDataFromServer: any = async () => {
     try {
       // Get data exposed from local server
@@ -12,13 +14,9 @@ export default function Index() {
       // obtained from the image to display the bounding boxes on the UI
       const content = await response.json();
 
-      // TODO: add callback fn to render the data on the UI
-      <JsonPage jsonData={content} refreshData />;
-
-      console.log(content);
+      setData(JSON.stringify(content));
     } catch (err) {
       console.log("Error: Failed to get data from server");
-      console.error(err); // display the full error
     }
   };
 
@@ -31,6 +29,9 @@ export default function Index() {
         <TouchableHighlight onPress={() => fetchDataFromServer()}>
           <Text style={styles.button}>Get data from server</Text>
         </TouchableHighlight>
+        <Pressable>
+          <Text>Data: {data}</Text>
+        </Pressable>
       </View>
     </View>
   );
