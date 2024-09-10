@@ -17,10 +17,11 @@ to have a copy of the project locally.
 From the root directory, run
 
 ```
+npm install
 npm run start
 ```
 
-To start the development server. Now press `w` in the same terminal to open the website on web.
+To install the dependencies and start the development server. Now press `w` in the same terminal to open the website on web.
 Alternatively you can run the application on mobile through [Expo Go](https://expo.dev/go) but for now, web is preferred for debugging.
 
 ## Run the server
