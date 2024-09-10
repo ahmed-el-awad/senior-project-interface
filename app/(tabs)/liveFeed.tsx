@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Video, ResizeMode } from "expo-av"; // Use expo-av for video
 import { MaterialIcons } from "@expo/vector-icons"; // Import icons from expo/vector-icons
 
-const VideoStreamPage = () => {
+const LiveFeed = () => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -19,7 +19,6 @@ const VideoStreamPage = () => {
         useNativeControls
         shouldPlay
       />
-      {} 
       <Text style={styles.countText}>Count: 0</Text>
     </View> // Counter not working just displaying text for now
   );
@@ -55,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VideoStreamPage;
+export default LiveFeed;
