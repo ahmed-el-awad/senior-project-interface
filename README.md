@@ -37,6 +37,7 @@ This will help with reflecting changes done on `server.js` without needing to st
 On a separate terminal, run the following commands
 
 ```
+npm install
 cd server
 nodemon server.js
 ```
