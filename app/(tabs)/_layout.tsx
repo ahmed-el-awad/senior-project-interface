@@ -1,30 +1,44 @@
-import { Tabs } from "expo-router";
-import React from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Drawer } from "expo-router/drawer";
+import { Ionicons } from "@expo/vector-icons";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function Layout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "index",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name={"person-running"} color={color} size={size} />
-          ),
-        }}
-      />
-    </Tabs>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Drawer>
+        <Drawer.Screen
+          name="index"
+          options={{
+            drawerLabel: "Home",
+            title: "Home",
+            drawerIcon: () => <Ionicons name="home-outline" size={24} />,
+          }}
+        />
+        <Drawer.Screen
+          name="settings"
+          options={{
+            drawerLabel: "Settings",
+            title: "Settings",
+            drawerIcon: () => <Ionicons name="settings-outline" size={24} />,
+          }}
+        />
+        <Drawer.Screen
+          name="liveFeed"
+          options={{
+            drawerLabel: "Live Feed",
+            title: "Live Feed",
+            drawerIcon: () => <Ionicons name="videocam-outline" size={24} />,
+          }}
+        />
+        <Drawer.Screen
+          name="dashboard"
+          options={{
+            drawerLabel: "Dashboard",
+            title: "Dashboard",
+            drawerIcon: () => <Ionicons name="analytics-outline" size={24} />,
+          }}
+        />
+      </Drawer>
+    </GestureHandlerRootView>
   );
 }
