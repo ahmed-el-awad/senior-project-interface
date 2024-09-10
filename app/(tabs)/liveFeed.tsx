@@ -7,7 +7,9 @@ const LiveFeed = () => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <MaterialIcons name="live-tv" size={24} color="red" /> {/* Add the live streaming icon */}
+        <Text>
+          <MaterialIcons name="live-tv" size={24} color="red" /> {/* Add the live streaming icon */}
+        </Text>
         <Text style={styles.title}>Live Stream</Text>
       </View>
       <Video
