@@ -7,14 +7,14 @@ export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer>
-        {/* <Drawer.Screen
+        <Drawer.Screen
           name="index"
           options={{
             drawerLabel: "Home",
             title: "Home",
             drawerIcon: () => <Ionicons name="home-outline" size={24} />,
           }}
-        /> */}
+        />
         <Drawer.Screen
           name="liveFeed"
           options={{
