@@ -40,6 +40,14 @@ export default function Layout() {
             drawerIcon: () => <Ionicons name="settings-outline" size={24} />,
           }}
         />
+        <Drawer.Screen
+          name="statistics"
+          options={{
+            drawerLabel: "Statistics",
+            title: "Statistics",
+            drawerIcon: () => <Ionicons name="stats-chart-outline" size={24} />,
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );
