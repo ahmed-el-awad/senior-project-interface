@@ -35,7 +35,7 @@ const LiveFeed = () => {
         <View style={{ display: "flex", alignContent: "center", alignItems: "center"}}>
           <Video
             source={{
-              uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+              uri: "https://videos.pexels.com/video-files/5598968/5598968-uhd_2560_1440_30fps.mp4",
             }} // Use a direct video URL
             style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
