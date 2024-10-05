@@ -40,7 +40,6 @@ const LiveFeed = () => {
             style={styles.video}
             resizeMode={ResizeMode.CONTAIN}
             useNativeControls
-            shouldPlay
           />
         </View>
         {/* Info Boxes Under the Video */}
