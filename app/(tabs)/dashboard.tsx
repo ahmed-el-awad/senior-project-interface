@@ -95,7 +95,7 @@ export default function DashboardScreen() {
           roundedTop
           roundedBottom
           hideRules
-          //showValuesAsTopLabel        //top labels dont look too good, will check them out later
+          //showValuesAsTopLabel        //top labels dont look too good, wil check them out later
           //topLabelTextStyle={{color: '#000', fontSize: 12}}
           xAxisThickness={0}
           yAxisThickness={0}
