@@ -1,158 +1,177 @@
 import React from "react";
-import { StyleSheet, Text, View, Image} from "react-native";
+import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView } from "react-native";
 import { Video, ResizeMode } from "expo-av"; // Use expo-av for video
 import { MaterialIcons } from "@expo/vector-icons"; // Import icons from expo/vector-icons
 import { Dimensions } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get("window");
 
 const LiveFeed = () => {
   return (
-    <View style={styles.container}>
-      <Image
-        source={{ uri: "https://via.placeholder.com/50" }} // Example placeholder profile picture
-        style={styles.profilePicture}
-      />
-      
-      {/* Bright orange notification bell on the top left */}
-      <MaterialIcons name="notifications" size={50} color="#F4A261" style={styles.notificationBell} />
-      <View style={styles.titleContainer}>
-        
-        {/* Flight number displayed first */}
-        <Text style={styles.FlightNumber}>Flight Number: #1234</Text>
-        <View style={styles.flightInfo}>
-          <Text style={styles.DateTimeText}>Date: January 1, 2025</Text>
-        </View>
-        <View>
-          <Text style={styles.DateTimeText}>Time: 3 PM</Text>
-        </View>
-        <View style={styles.liveStreamContainer}>
-          <MaterialIcons name="live-tv" size={24} color="red" />
-          <Text style={styles.title}>Live Feed</Text>
-        </View>
-      </View>
-      <View>
-        <View style={{ display: "flex", alignContent: "center", alignItems: "center"}}>
-          <Video
-            source={{
-              uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-            }} // Use a direct video URL
-            style={styles.video}
-            resizeMode={ResizeMode.CONTAIN}
-            useNativeControls
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Image
+            source={require("../../assets/images/goat-logo.png")}
+            style={styles.logo}
           />
+          <View style={styles.headerRight}>
+            <View style={styles.notificationContainer}>
+              <MaterialIcons name="notifications" size={24} color="#fff" />
+            </View>
+            <Image
+              source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }}
+              style={styles.profilePicture}
+            />
+          </View>
         </View>
-        {/* Info Boxes Under the Video */}
+        
+        <View style={styles.titleContainer}>
+          <Text style={styles.flightNumber}>Flight #1234</Text>
+          <Text style={styles.dateTimeText}>January 1, 2025 • 3:00 PM</Text>
+        </View>
+        
+        <LinearGradient
+          colors={['#FF416C', '#FF4B2B']}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 0}}
+          style={styles.liveStreamContainer}
+        >
+          <MaterialIcons name="live-tv" size={24} color="#fff" />
+          <Text style={styles.title}>Live Feed</Text>
+        </LinearGradient>
+        
+        <Video
+          source={{
+            uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+          }}
+          style={styles.video}
+          resizeMode={ResizeMode.STRETCH}
+          useNativeControls
+        />
+        
         <View style={styles.infoContainer}>
-          <View style={styles.infoBoxContainer}>
-            <Text style={styles.label}>Count</Text>
-            <View style={styles.countBox}>
-              <Text style={styles.countText}>0</Text>
+          {['Count', 'Habitat', 'Elevation'].map((label, index) => (
+            <View key={index} style={styles.infoBoxContainer}>
+              <Text style={styles.label}>{label}</Text>
+              <View style={styles.countBox}>
+                <Text style={styles.countText}>{index === 0 ? '0' : index === 1 ? 'Field' : '1000 ft'}</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.infoBoxContainer}>
-            <Text style={styles.label}>Habitat</Text>
-            <View style={styles.countBox}>
-              <Text style={styles.countText}>Field</Text>
-            </View>
-          </View>
-          <View style={styles.infoBoxContainer}>
-            <Text style={styles.label}>Elevation</Text>
-            <View style={styles.countBox}>
-              <Text style={styles.countText}>-</Text>
-            </View>
-          </View>
+          ))}
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5",
   },
-  titleContainer: {
-    width: "100%", // Take up the full width of the screen
-    paddingHorizontal: 40, // Add some padding to the left and right
-    marginBottom: 20,
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
   },
-  flightInfo: {
-    marginTop: 20,
-    marginBottom: 10,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  logo: {
+    width: 80,
+    height: 65,
+    resizeMode: 'contain',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notificationContainer: {
+    backgroundColor: '#FF4B2B',
+    padding: 10,
+    borderRadius: 20,
+    marginRight: 10,
   },
   profilePicture: {
-    width: 50, // Adjust the size of the profile picture
+    width: 50,
     height: 50,
-    borderRadius: 25, // Make it circular
-    position: "absolute", // Position it absolutely
-    top: 10, // Position from top
-    right: 10, // Position from right
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#FFA500',
   },
-  notificationBell: {
-    position: "absolute", // Position it absolutely
-    top: 10, // Position from top
-    left: 10, // Position from left
+  titleContainer: {
+    marginBottom: 25,
+  },
+  flightNumber: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: '#2c3e50',
+    marginBottom: 5,
+  },
+  dateTimeText: {
+    fontSize: 16,
+    color: '#7f8c8d',
   },
   liveStreamContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 100, 
     justifyContent: "center",
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 25,
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
     marginLeft: 8,
-    textAlign: "center",
-  },
-  FlightNumber: {
-    fontSize: 30,
-    fontWeight: "bold",
-    alignSelf: 'flex-start', // Align the flight number to the left
-  },
-  DateTimeText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    alignSelf: 'flex-start', // Align the date to the left
+    color: '#fff',
   },
   video: {
-    alignSelf: 'center',
-    width: width / 1.2,
-    height: height / 3,
-    borderRadius: 20,
-    overflow: "hidden",
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginBottom: 25,
+    backgroundColor: '#000',
   },
   infoContainer: {
-    flexDirection: "row", // Align the boxes horizontally
-    justifyContent: "space-between", // Even spacing between boxes
-    marginTop: 20,
-    width: width * 0.8, // Adjust width for proper alignment
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   infoBoxContainer: {
-    alignItems: "center", // Center the label and the box
+    alignItems: "center",
+    flex: 1,
   },
   label: {
     fontSize: 14,
-    marginBottom: 5,
-    textAlign: "center",
+    marginBottom: 8,
+    color: '#34495e',
+    fontWeight: '600',
   },
   countBox: {
-    backgroundColor: "#F4A261", // Light orange background for the count boxes
-    paddingHorizontal: 20, // Adjust padding to control the box size
+    backgroundColor: "#FF4B2B",
+    paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 8, // Round corners
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 12,
+    minWidth: 90,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   countText: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    color: '#fff',
   },
 });
 
