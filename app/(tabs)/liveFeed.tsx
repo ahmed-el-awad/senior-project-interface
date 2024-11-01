@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import { Video, ResizeMode } from "expo-av"; // Use expo-av for video
 import { MaterialIcons } from "@expo/vector-icons"; // Import icons from expo/vector-icons
 import { Dimensions } from "react-native";
@@ -8,6 +8,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width, height } = Dimensions.get("window");
 
 const LiveFeed = () => {
+  const [showNotifications, setShowNotifications] = React.useState(false);
+  const [notifications] = React.useState([
+    { id: 1, message: "Flight ended at 2:45 PM", timestamp: "2 mins ago" },
+    { id: 2, message: "Intruder Detected", timestamp: "15 mins ago" },
+    { id: 3, message: "New flight started", timestamp: "1 hour ago" },
+  ]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -18,7 +25,25 @@ const LiveFeed = () => {
           />
           <View style={styles.headerRight}>
             <View style={styles.notificationContainer}>
-              <MaterialIcons name="notifications" size={24} color="#fff" />
+              <TouchableOpacity
+                onPress={() => setShowNotifications(!showNotifications)}
+              >
+                <MaterialIcons name="notifications" size={24} color="#fff" />
+              </TouchableOpacity>
+              {showNotifications && (
+                <View style={styles.notificationDropdown}>
+                  {notifications.map((notification) => (
+                    <View key={notification.id} style={styles.notificationItem}>
+                      <Text style={styles.notificationText}>
+                        {notification.message}
+                      </Text>
+                      <Text style={styles.notificationTime}>
+                        {notification.timestamp}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
             <Image
               source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }}
@@ -80,6 +105,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 30,
+    zIndex: 2,
+    elevation: 2,
   },
   logo: {
     width: 80,
@@ -89,12 +116,16 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 2,
+    elevation: 2,
   },
   notificationContainer: {
     backgroundColor: '#FF4B2B',
     padding: 10,
     borderRadius: 20,
     marginRight: 10,
+    zIndex: 9999,
+    elevation: 9999,
   },
   profilePicture: {
     width: 50,
@@ -172,6 +203,38 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: '#fff',
+  },
+  notificationDropdown: {
+    position: 'absolute',
+    top: 50,
+    right: 0,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    width: 250,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 9999,
+    zIndex: 9999,
+  },
+  notificationItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  notificationText: {
+    fontSize: 14,
+    color: '#2c3e50',
+    marginBottom: 4,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: '#7f8c8d',
   },
 });
 

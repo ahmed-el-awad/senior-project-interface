@@ -1,15 +1,18 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Dimensions } from "react-native";
 
 export default function LastFlights() {
+  const windowWidth = Dimensions.get('window').width;
+
   return (
     <View
       style={{
         display: "flex",
         marginTop: 10,
-        width: 500, // TODO: make this responsive later
-        backgroundColor: "lightblue",
+        width: '100%',
+        backgroundColor: "white",
         borderRadius: 20,
         flexDirection: "row",
+        paddingRight: 10,
       }}
     >
       {/* Left Side */}
@@ -18,32 +21,37 @@ export default function LastFlights() {
           style={{
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
+            width: windowWidth * 0.2,
+            height: windowWidth * 0.2,
           }}
           id="goat"
           source={{
-            uri: "/assets/images/stats-goat.png",
-            width: 100,
-            height: 100,
+            uri: "https://images.pexels.com/photos/2658458/pexels-photo-2658458.jpeg",
           }}
         />
       </View>
 
       {/* Right Side  */}
-      <View>
+      <View style={{ flex: 1 }}>
         {/* Top */}
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly" }}>
+        <View style={{ 
+          display: "flex", 
+          flexDirection: "row", 
+          justifyContent: "space-between",
+          paddingHorizontal: 10 
+        }}>
           {/* Flight Number */}
-          <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
+          <Text style={{ paddingTop: 5 }}>
             Flight number:{" "}
-            <Text style={{ backgroundColor: "orange", borderRadius: 5, paddingHorizontal: 5 }}>
+            <Text style={{ color: "#FF4B2B", fontWeight: '600' }}>
               #2441
             </Text>
           </Text>
 
           {/* Date */}
-          <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
+          <Text style={{ paddingTop: 5 }}>
             Date:{" "}
-            <Text style={{ backgroundColor: "orange", borderRadius: 5, paddingHorizontal: 5 }}>
+            <Text style={{ color: "#FF4B2B", fontWeight: '600' }}>
               1/1/2024
             </Text>
           </Text>
@@ -54,80 +62,45 @@ export default function LastFlights() {
           style={{
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-evenly",
-            padding: "auto",
+            justifyContent: "space-between",
+            paddingHorizontal: 10,
+            marginTop: 10
           }}
         >
-          {/* Arabian Tahr */}
-          <View style={{ display: "flex", flexDirection: "row", marginTop: 20 }}>
-            <View>
-              <Text style={{ paddingTop: 5, paddingLeft: 5 }}>Arabian Tahr</Text>
-
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: "orange",
-                    borderRadius: 5,
-                    paddingHorizontal: 5,
-                  }}
-                >
-                  20
-                </Text>
-              </View>
-            </View>
+          {/* Animals */}
+          <View style={{ alignItems: 'center', flex: 1 }}>
+            <Text>Animals</Text>
+            <Text style={{
+              color: "#FF4B2B",
+              fontWeight: '600',
+              marginTop: 5,
+            }}>
+              20
+            </Text>
           </View>
 
-          {/* Threats */}
-          <View style={{ display: "flex", flexDirection: "row", marginTop: 20 }}>
-            <View>
-              <Text style={{ paddingTop: 5, paddingLeft: 5 }}>Threats</Text>
-
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: "orange",
-                    borderRadius: 5,
-                    paddingHorizontal: 5,
-                  }}
-                >
-                  2
-                </Text>
-              </View>
-            </View>
+          {/* Terrain */}
+          <View style={{ alignItems: 'center', flex: 1 }}>
+            <Text>Terrain</Text>
+            <Text style={{
+              color: "#FF4B2B",
+              fontWeight: '600',
+              marginTop: 5,
+            }}>
+              Rocky
+            </Text>
           </View>
 
-          {/* Other Animals */}
-          <View style={{ display: "flex", flexDirection: "row", marginTop: 20 }}>
-            <View>
-              <Text style={{ paddingTop: 5, paddingLeft: 5 }}>Other Animals</Text>
-
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: "orange",
-                    borderRadius: 5,
-                    paddingHorizontal: 5,
-                  }}
-                >
-                  5
-                </Text>
-              </View>
-            </View>
+          {/* Elevation */}
+          <View style={{ alignItems: 'center', flex: 1 }}>
+            <Text>Elevation</Text>
+            <Text style={{
+              color: "#FF4B2B",
+              fontWeight: '600',
+              marginTop: 5,
+            }}>
+              1200m
+            </Text>
           </View>
         </View>
       </View>

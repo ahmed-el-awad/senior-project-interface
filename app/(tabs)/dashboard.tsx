@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 // Dummy data
 const dummyData = {
@@ -37,6 +38,8 @@ const coloredAnimalData = dummyData.animalCountPerFlight.map(item => ({
 }));
 
 export default function DashboardScreen() {
+  const router = useRouter();
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -128,7 +131,15 @@ export default function DashboardScreen() {
       </View>
 
       <View style={styles.recentFlightsContainer}>
-        <Text style={styles.sectionTitle}>Recent Flights</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Recent Flights</Text>
+          <TouchableOpacity 
+            onPress={() => router.push('/(tabs)/statistics')}
+            style={styles.showMoreButton}
+          >
+            <Text style={styles.showMoreText}>Show more</Text>
+          </TouchableOpacity>
+        </View>
         {dummyData.recentFlights.map((flight, index) => (
           <View key={index} style={styles.flightItem}>
             <MaterialCommunityIcons name="drone" size={24} color="#177AD5" />
@@ -262,5 +273,20 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 14,
     color: '#333',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  showMoreButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  showMoreText: {
+    color: '#FF4B2B',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
