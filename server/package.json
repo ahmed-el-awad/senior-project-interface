@@ -1,0 +1,8 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Run database server",
+  "scripts": {
+    "db-server": "flask --app db_server run --debug"
+  }
+}
