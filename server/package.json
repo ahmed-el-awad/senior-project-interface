@@ -4,5 +4,9 @@
   "description": "Run database server",
   "scripts": {
     "db-server": "flask --app db_server run --debug"
+  },
+  "dependencies": {
+    "@types/socket.io-client": "^3.0.0",
+    "socket.io-client": "^4.8.1"
   }
 }

@@ -77,11 +77,11 @@ const LiveFeed = () => {
         />
         
         <View style={styles.infoContainer}>
-          {['Count', 'Habitat', 'Elevation'].map((label, index) => (
+          {['Tahr', 'Intruders', 'Flight Time'].map((label, index) => (
             <View key={index} style={styles.infoBoxContainer}>
               <Text style={styles.label}>{label}</Text>
               <View style={styles.countBox}>
-                <Text style={styles.countText}>{index === 0 ? '0' : index === 1 ? 'Field' : '1000 ft'}</Text>
+                <Text style={styles.countText}>0</Text>
               </View>
             </View>
           ))}
