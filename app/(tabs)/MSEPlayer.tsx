@@ -77,6 +77,7 @@ export const MSEPlayer: React.FC<MSEPlayerProps> = ({ uri, isLiveStream = true }
                 id="video"
                 style="width: 100%; height: 100%;"
                 playsinline
+                muted
               />
             `,
           }}
