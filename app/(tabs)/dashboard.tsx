@@ -1,44 +1,61 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Button,
+} from "react-native";
+import { LineChart, BarChart, PieChart } from "react-native-gifted-charts";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 // Dummy data
 const dummyData = {
   totalFlights: 50,
   averageElevation: 70,
   totalAnimals: 1250,
-  elevationTrend: [
-    {value: 60}, {value: 70}, {value: 110}, {value: 90}, {value: 80}
-  ],
-  animalCountPerFlight: [
-    {value: 20}, {value: 35}, {value: 15}, {value: 40}, {value: 30}
-  ],
+  elevationTrend: [{ value: 60 }, { value: 70 }, { value: 110 }, { value: 90 }, { value: 80 }],
+  animalCountPerFlight: [{ value: 20 }, { value: 35 }, { value: 15 }, { value: 40 }, { value: 30 }],
   terrainTypes: [
-    {value: 30, text: 'Forest', color: '#177AD5'},
-    {value: 25, text: 'Grassland', color: '#79D2DE'},
-    {value: 20, text: 'Mountain', color: '#ED6665'},
-    {value: 15, text: 'Desert', color: '#F0B775'},
-    {value: 10, text: 'Wetland', color: '#8F80E4'}
+    { value: 30, text: "Forest", color: "#177AD5" },
+    { value: 25, text: "Grassland", color: "#79D2DE" },
+    { value: 20, text: "Mountain", color: "#ED6665" },
+    { value: 15, text: "Desert", color: "#F0B775" },
+    { value: 10, text: "Wetland", color: "#8F80E4" },
   ],
   recentFlights: [
-    {date: '2023-04-01', animals: 25, terrain: 'Forest', elevation: 110},
-    {date: '2023-04-03', animals: 30, terrain: 'Grassland', elevation: 90},
-    {date: '2023-04-05', animals: 15, terrain: 'Mountain', elevation: 70},
-    {date: '2023-04-07', animals: 40, terrain: 'Forest', elevation: 100},
-    {date: '2023-04-09', animals: 20, terrain: 'Desert', elevation: 80},
-  ]
+    { date: "2023-04-01", animals: 25, terrain: "Forest", elevation: 110 },
+    { date: "2023-04-03", animals: 30, terrain: "Grassland", elevation: 90 },
+    { date: "2023-04-05", animals: 15, terrain: "Mountain", elevation: 70 },
+    { date: "2023-04-07", animals: 40, terrain: "Forest", elevation: 100 },
+    { date: "2023-04-09", animals: 20, terrain: "Desert", elevation: 80 },
+  ],
 };
 
 // Couldnt change the color of the bars in bar chart, so used this instead
-const coloredAnimalData = dummyData.animalCountPerFlight.map(item => ({
+const coloredAnimalData = dummyData.animalCountPerFlight.map((item) => ({
   ...item,
-  frontColor: '#FF4B2B'
+  frontColor: "#FF4B2B",
 }));
 
 export default function DashboardScreen() {
   const router = useRouter();
+
+  const generateEleveationData = () => {
+    const [data, setData]: any = useState(dummyData.elevationTrend);
+
+    console.log(data);
+
+    function handleClick() {
+      setData(() => dummyData.elevationTrend.map((obj) => (obj.value = obj.value * 30)));
+    }
+
+    handleClick();
+    console.log("elevated");
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -70,6 +87,12 @@ export default function DashboardScreen() {
 
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Elevation Trend</Text>
+        <Button
+          onPress={() => {
+            generateEleveationData();
+          }}
+          title="Generate"
+        ></Button>
         <LineChart
           data={dummyData.elevationTrend}
           hideRules
@@ -102,7 +125,7 @@ export default function DashboardScreen() {
           //topLabelTextStyle={{color: '#000', fontSize: 12}}
           xAxisThickness={0}
           yAxisThickness={0}
-          yAxisTextStyle={{color: '#000'}}
+          yAxisTextStyle={{ color: "#000" }}
           noOfSections={5}
           maxValue={50}
           width={300}
@@ -113,17 +136,14 @@ export default function DashboardScreen() {
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Terrain Types Surveyed</Text>
         <View style={styles.chartLegendContainer}>
-          <PieChart
-            data={dummyData.terrainTypes}
-            donut
-            radius={80}
-            innerRadius={60}
-          />
+          <PieChart data={dummyData.terrainTypes} donut radius={80} innerRadius={60} />
           <View style={styles.legend}>
             {dummyData.terrainTypes.map((item, index) => (
               <View key={index} style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: item.color }]} />
-                <Text style={styles.legendText}>{item.text}: {item.value}%</Text>
+                <Text style={styles.legendText}>
+                  {item.text}: {item.value}%
+                </Text>
               </View>
             ))}
           </View>
@@ -133,8 +153,8 @@ export default function DashboardScreen() {
       <View style={styles.recentFlightsContainer}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Recent Flights</Text>
-          <TouchableOpacity 
-            onPress={() => router.push('/(tabs)/statistics')}
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/statistics")}
             style={styles.showMoreButton}
           >
             <Text style={styles.showMoreText}>Show more</Text>
@@ -145,7 +165,9 @@ export default function DashboardScreen() {
             <MaterialCommunityIcons name="drone" size={24} color="#177AD5" />
             <View style={styles.flightInfo}>
               <Text style={styles.flightDate}>{flight.date}</Text>
-              <Text style={styles.flightDetail}>Animals: {flight.animals} | Terrain: {flight.terrain}</Text>
+              <Text style={styles.flightDetail}>
+                Animals: {flight.animals} | Terrain: {flight.terrain}
+              </Text>
               <Text style={styles.flightDetail}>Elevation: {flight.elevation}m</Text>
             </View>
           </View>
@@ -158,29 +180,29 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   header: {
-    backgroundColor: '#FF4B2B',
+    backgroundColor: "#FF4B2B",
     padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerText: {
-    color: 'white',
+    color: "white",
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 10,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
-    color: '#333',
+    color: "#333",
   },
   summaryContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
@@ -191,29 +213,29 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   summaryItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   summaryValue: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginTop: 5,
   },
   summaryLabel: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginTop: 5,
   },
   chartContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -221,7 +243,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   recentFlightsContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
@@ -232,10 +254,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   flightItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
     paddingVertical: 15,
   },
   flightInfo: {
@@ -243,25 +265,25 @@ const styles = StyleSheet.create({
   },
   flightDate: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   flightDetail: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 3,
   },
   chartLegendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   legend: {
     marginLeft: 20,
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   legendColor: {
@@ -272,12 +294,12 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 15,
   },
   showMoreButton: {
@@ -285,8 +307,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   showMoreText: {
-    color: '#FF4B2B',
+    color: "#FF4B2B",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
