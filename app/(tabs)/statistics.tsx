@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import axios from 'axios';
+import axios from "axios";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Alert,
   Modal,
 } from "react-native";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 interface FlightData {
   id: number;
@@ -23,8 +23,20 @@ interface FlightData {
   flight_number: string;
 }
 
+// Update the color constants at the top to match dashboard
+const COLORS = {
+  primary: "#ECB367", // Dark rust
+  secondary: "#ECB367", // Light orange
+  dark: "#2C3E50", // Dark blue-gray
+  text: {
+    dark: "#2C3E50", // Dark text
+    light: "#FFF", // Light text
+    muted: "#7F8C8D", // Muted text
+  },
+};
+
 export default function Statistics() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [flights, setFlights] = useState<FlightData[]>([]);
   const [stats, setStats] = useState({
     totalFlights: 0,
@@ -44,22 +56,26 @@ export default function Statistics() {
 
   // Add state for manual date inputs
   const [manualDates, setManualDates] = useState({
-    startDate: dateRange.startDate.toISOString().split('T')[0],
-    endDate: dateRange.endDate.toISOString().split('T')[0]
+    startDate: dateRange.startDate.toISOString().split("T")[0],
+    endDate: dateRange.endDate.toISOString().split("T")[0],
   });
 
   const fetchFlights = async () => {
     try {
       const response = await axios.get(`${baseURL}/flight_data`);
       setFlights(response.data);
-      
+
       // Calculate statistics
       const totalFlights = response.data.length;
-      const totalTime = response.data.reduce((acc: number, flight: FlightData) => 
-        acc + flight.flight_duration, 0);
-      const totalDetections = response.data.reduce((acc: number, flight: FlightData) => 
-        acc + flight.tahr_count + flight.intruder_detections, 0);
-      
+      const totalTime = response.data.reduce(
+        (acc: number, flight: FlightData) => acc + flight.flight_duration,
+        0
+      );
+      const totalDetections = response.data.reduce(
+        (acc: number, flight: FlightData) => acc + flight.tahr_count + flight.intruder_detections,
+        0
+      );
+
       setStats({
         totalFlights,
         totalTime,
@@ -76,11 +92,15 @@ export default function Statistics() {
   }, []);
 
   // Filter flights based on search query
-  const filteredFlights = flights.filter(flight => {
-    const searchMatch = flight.flight_number.toString().toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredFlights = flights.filter((flight) => {
+    const searchMatch = flight.flight_number
+      .toString()
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const flightDate = new Date(flight.flight_date);
-    const dateMatch = flightDate >= dateRange.startDate && 
-                     flightDate <= new Date(dateRange.endDate.setHours(23, 59, 59)); // Include full end date
+    const dateMatch =
+      flightDate >= dateRange.startDate &&
+      flightDate <= new Date(dateRange.endDate.setHours(23, 59, 59)); // Include full end date
     return searchMatch && dateMatch;
   });
 
@@ -88,14 +108,14 @@ export default function Statistics() {
   const resetDateFilter = () => {
     const defaultStartDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
     const defaultEndDate = new Date();
-    
+
     setDateRange({
       startDate: defaultStartDate,
-      endDate: defaultEndDate
+      endDate: defaultEndDate,
     });
     setManualDates({
-      startDate: defaultStartDate.toISOString().split('T')[0],
-      endDate: defaultEndDate.toISOString().split('T')[0]
+      startDate: defaultStartDate.toISOString().split("T")[0],
+      endDate: defaultEndDate.toISOString().split("T")[0],
     });
   };
 
@@ -110,7 +130,7 @@ export default function Statistics() {
         <View style={styles.modalContent}>
           <View style={styles.filterHeader}>
             <Text style={styles.modalTitle}>Filter by Date Range</Text>
-            <Pressable 
+            <Pressable
               style={styles.clearButton}
               onPress={() => {
                 resetDateFilter();
@@ -120,7 +140,7 @@ export default function Statistics() {
               <Text style={styles.clearButtonText}>Clear Filter</Text>
             </Pressable>
           </View>
-          
+
           <View style={styles.datePickerContainer}>
             <Text style={styles.dateLabel}>Start Date:</Text>
             <View style={styles.dateInputContainer}>
@@ -128,14 +148,11 @@ export default function Statistics() {
                 style={styles.dateInput}
                 value={manualDates.startDate}
                 onChangeText={(text) => {
-                  setManualDates(prev => ({...prev, startDate: text}));
+                  setManualDates((prev) => ({ ...prev, startDate: text }));
                 }}
                 placeholder="YYYY-MM-DD"
               />
-              <Pressable 
-                style={styles.calendarButton}
-                onPress={() => setShowStartPicker(true)}
-              >
+              <Pressable style={styles.calendarButton} onPress={() => setShowStartPicker(true)}>
                 <Ionicons name="calendar-outline" size={20} color="#666" />
               </Pressable>
             </View>
@@ -148,53 +165,50 @@ export default function Statistics() {
                 style={styles.dateInput}
                 value={manualDates.endDate}
                 onChangeText={(text) => {
-                  setManualDates(prev => ({...prev, endDate: text}));
+                  setManualDates((prev) => ({ ...prev, endDate: text }));
                 }}
                 placeholder="YYYY-MM-DD"
               />
-              <Pressable 
-                style={styles.calendarButton}
-                onPress={() => setShowEndPicker(true)}
-              >
+              <Pressable style={styles.calendarButton} onPress={() => setShowEndPicker(true)}>
                 <Ionicons name="calendar-outline" size={20} color="#666" />
               </Pressable>
             </View>
           </View>
 
           <View style={styles.modalButtons}>
-            <Pressable 
+            <Pressable
               style={styles.modalButton}
               onPress={() => {
                 setIsFilterVisible(false);
                 // Reset to previous values
                 setManualDates({
-                  startDate: dateRange.startDate.toISOString().split('T')[0],
-                  endDate: dateRange.endDate.toISOString().split('T')[0]
+                  startDate: dateRange.startDate.toISOString().split("T")[0],
+                  endDate: dateRange.endDate.toISOString().split("T")[0],
                 });
               }}
             >
               <Text style={styles.buttonText}>Cancel</Text>
             </Pressable>
-            <Pressable 
+            <Pressable
               style={styles.modalButton}
               onPress={() => {
                 // Validate and apply dates
                 try {
                   const newStartDate = new Date(manualDates.startDate);
                   const newEndDate = new Date(manualDates.endDate);
-                  
+
                   if (isNaN(newStartDate.getTime()) || isNaN(newEndDate.getTime())) {
-                    Alert.alert('Invalid Date', 'Please enter dates in YYYY-MM-DD format');
+                    Alert.alert("Invalid Date", "Please enter dates in YYYY-MM-DD format");
                     return;
                   }
-                  
+
                   setDateRange({
                     startDate: newStartDate,
-                    endDate: newEndDate
+                    endDate: newEndDate,
                   });
                   setIsFilterVisible(false);
                 } catch (error) {
-                  Alert.alert('Invalid Date', 'Please enter dates in YYYY-MM-DD format');
+                  Alert.alert("Invalid Date", "Please enter dates in YYYY-MM-DD format");
                 }
               }}
             >
@@ -211,13 +225,12 @@ export default function Statistics() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable>
-          <Image
-            source={require("../../assets/images/goat-logo.png")}
-            style={styles.logo}
-          />
+          <Image source={require("../../assets/images/goat-logo.png")} style={styles.logo} />
         </Pressable>
         <Image
-          source={{ uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80" }}
+          source={{
+            uri: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80",
+          }}
           style={styles.profilePicture}
         />
       </View>
@@ -233,18 +246,15 @@ export default function Statistics() {
             onChangeText={setSearchQuery}
           />
         </View>
-        <Pressable 
-          style={styles.filterButton}
-          onPress={() => setIsFilterVisible(true)}
-        >
+        <Pressable style={styles.filterButton} onPress={() => setIsFilterVisible(true)}>
           <Ionicons name="filter" size={20} color="white" />
         </Pressable>
-        
+
         {isFilterVisible && (
           <View style={styles.filterDropdown}>
             <View style={styles.filterHeader}>
               <Text style={styles.modalTitle}>Filter by Date Range</Text>
-              <Pressable 
+              <Pressable
                 style={styles.clearButton}
                 onPress={() => {
                   resetDateFilter();
@@ -254,7 +264,7 @@ export default function Statistics() {
                 <Text style={styles.clearButtonText}>Clear Filter</Text>
               </Pressable>
             </View>
-            
+
             <View style={styles.datePickerContainer}>
               <Text style={styles.dateLabel}>Start Date:</Text>
               <View style={styles.dateInputContainer}>
@@ -262,14 +272,11 @@ export default function Statistics() {
                   style={styles.dateInput}
                   value={manualDates.startDate}
                   onChangeText={(text) => {
-                    setManualDates(prev => ({...prev, startDate: text}));
+                    setManualDates((prev) => ({ ...prev, startDate: text }));
                   }}
                   placeholder="YYYY-MM-DD"
                 />
-                <Pressable 
-                  style={styles.calendarButton}
-                  onPress={() => setShowStartPicker(true)}
-                >
+                <Pressable style={styles.calendarButton} onPress={() => setShowStartPicker(true)}>
                   <Ionicons name="calendar-outline" size={20} color="#666" />
                 </Pressable>
               </View>
@@ -282,53 +289,50 @@ export default function Statistics() {
                   style={styles.dateInput}
                   value={manualDates.endDate}
                   onChangeText={(text) => {
-                    setManualDates(prev => ({...prev, endDate: text}));
+                    setManualDates((prev) => ({ ...prev, endDate: text }));
                   }}
                   placeholder="YYYY-MM-DD"
                 />
-                <Pressable 
-                  style={styles.calendarButton}
-                  onPress={() => setShowEndPicker(true)}
-                >
+                <Pressable style={styles.calendarButton} onPress={() => setShowEndPicker(true)}>
                   <Ionicons name="calendar-outline" size={20} color="#666" />
                 </Pressable>
               </View>
             </View>
 
             <View style={styles.modalButtons}>
-              <Pressable 
+              <Pressable
                 style={styles.modalButton}
                 onPress={() => {
                   setIsFilterVisible(false);
                   // Reset to previous values
                   setManualDates({
-                    startDate: dateRange.startDate.toISOString().split('T')[0],
-                    endDate: dateRange.endDate.toISOString().split('T')[0]
+                    startDate: dateRange.startDate.toISOString().split("T")[0],
+                    endDate: dateRange.endDate.toISOString().split("T")[0],
                   });
                 }}
               >
                 <Text style={styles.buttonText}>Cancel</Text>
               </Pressable>
-              <Pressable 
+              <Pressable
                 style={styles.modalButton}
                 onPress={() => {
                   // Validate and apply dates
                   try {
                     const newStartDate = new Date(manualDates.startDate);
                     const newEndDate = new Date(manualDates.endDate);
-                    
+
                     if (isNaN(newStartDate.getTime()) || isNaN(newEndDate.getTime())) {
-                      Alert.alert('Invalid Date', 'Please enter dates in YYYY-MM-DD format');
+                      Alert.alert("Invalid Date", "Please enter dates in YYYY-MM-DD format");
                       return;
                     }
-                    
+
                     setDateRange({
                       startDate: newStartDate,
-                      endDate: newEndDate
+                      endDate: newEndDate,
                     });
                     setIsFilterVisible(false);
                   } catch (error) {
-                    Alert.alert('Invalid Date', 'Please enter dates in YYYY-MM-DD format');
+                    Alert.alert("Invalid Date", "Please enter dates in YYYY-MM-DD format");
                   }
                 }}
               >
@@ -380,7 +384,9 @@ export default function Statistics() {
               <View style={styles.verticalDivider} />
               <View style={styles.detectionBox}>
                 <Text style={styles.detectionLabel}>Intruders</Text>
-                <Text style={[styles.detectionCount, styles.intruderCount]}>{flight.intruder_detections}</Text>
+                <Text style={[styles.detectionCount, styles.intruderCount]}>
+                  {flight.intruder_detections}
+                </Text>
               </View>
             </View>
           </View>
@@ -395,10 +401,10 @@ export default function Statistics() {
           onChange={(event, selectedDate) => {
             setShowStartPicker(false);
             if (selectedDate) {
-              setDateRange(prev => ({...prev, startDate: selectedDate}));
-              setManualDates(prev => ({
-                ...prev, 
-                startDate: selectedDate.toISOString().split('T')[0]
+              setDateRange((prev) => ({ ...prev, startDate: selectedDate }));
+              setManualDates((prev) => ({
+                ...prev,
+                startDate: selectedDate.toISOString().split("T")[0],
               }));
             }
           }}
@@ -412,10 +418,10 @@ export default function Statistics() {
           onChange={(event, selectedDate) => {
             setShowEndPicker(false);
             if (selectedDate) {
-              setDateRange(prev => ({...prev, endDate: selectedDate}));
-              setManualDates(prev => ({
-                ...prev, 
-                endDate: selectedDate.toISOString().split('T')[0]
+              setDateRange((prev) => ({ ...prev, endDate: selectedDate }));
+              setManualDates((prev) => ({
+                ...prev,
+                endDate: selectedDate.toISOString().split("T")[0],
               }));
             }
           }}
@@ -428,13 +434,13 @@ export default function Statistics() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f2f5',
+    backgroundColor: "#f0f2f5",
     padding: 8,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
   },
   logo: {
@@ -447,18 +453,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     marginBottom: 20,
-    position: 'relative',
+    position: "relative",
     zIndex: 1000,
   },
   searchInputContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     borderRadius: 50,
     paddingHorizontal: 15,
     height: 45,
@@ -469,53 +475,53 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: '#2c3e50',
+    color: "#2c3e50",
   },
   filterButton: {
-    backgroundColor: '#FF4B2B',
+    backgroundColor: COLORS.primary,
     width: 45,
     height: 45,
     borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   statsContainer: {
     marginBottom: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     zIndex: 1,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 15,
   },
   statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 10,
   },
   statBox: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     minHeight: 80,
   },
   statNumber: {
     fontSize: 24,
-    fontWeight: '700',
-    color: '#FF4B2B',
+    fontWeight: "700",
+    color: COLORS.primary,
     marginBottom: 5,
-    textAlign: 'center',
+    textAlign: "center",
   },
   statLabel: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
   },
   flightsSection: {
     marginBottom: 20,
@@ -526,87 +532,87 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: '#FFA500',
+    borderColor: COLORS.secondary,
   },
   flightCard: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     marginBottom: 10,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   flightHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 15,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   flightDate: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   flightDuration: {
     fontSize: 14,
-    color: '#666',
-    backgroundColor: '#f0f2f5',
+    color: "#666",
+    backgroundColor: "#f0f2f5",
   },
   flightDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     flex: 1,
     gap: 5,
   },
   verticalDivider: {
     width: 1,
-    height: '100%',
-    backgroundColor: '#eee',
+    height: "100%",
+    backgroundColor: "#eee",
     marginHorizontal: 10,
   },
   detailText: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
   },
   flightHeaderLeft: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 4,
   },
   flightNumber: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#FF4B2B',
+    fontWeight: "600",
+    color: COLORS.primary,
     marginBottom: 4,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: "600",
+    color: "#2c3e50",
   },
   datePickerContainer: {
     marginBottom: 15,
@@ -614,20 +620,20 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 16,
     marginBottom: 5,
-    color: '#666',
+    color: "#666",
   },
   dateInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 10,
   },
   dateInput: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
     paddingHorizontal: 10,
   },
   calendarButton: {
@@ -635,8 +641,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
     gap: 10,
   },
@@ -644,25 +650,25 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
-    backgroundColor: 'transparent', // Remove background color
+    alignItems: "center",
+    backgroundColor: "transparent", // Remove background color
   },
   buttonText: {
-    color: '#FF4B2B',  // Orange color for both buttons
+    color: COLORS.primary,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   filterDropdown: {
-    position: 'absolute',
-    top: '100%',
+    position: "absolute",
+    top: "100%",
     right: 0,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 20,
     width: 300,
     marginTop: 10,
     zIndex: 1001,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -672,35 +678,35 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   filterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   clearButton: {
     padding: 5,
   },
   clearButtonText: {
-    color: '#FF4B2B',
+    color: COLORS.primary,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   detectionBox: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   detectionLabel: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   detectionCount: {
     fontSize: 24,
-    fontWeight: '700',
-    color: '#FF4B2B',
+    fontWeight: "700",
+    color: COLORS.primary,
     marginBottom: 5,
-    textAlign: 'center',
+    textAlign: "center",
   },
   intruderCount: {
-    color: '#FF4B2B',
+    color: COLORS.primary,
   },
 });

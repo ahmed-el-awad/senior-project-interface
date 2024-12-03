@@ -14,6 +14,20 @@ interface FlightData {
   flight_number: string;
 }
 
+// Define a consistent color palette at the top
+const COLORS = {
+  primary: '#A64724',     // Main orange color
+  secondary: '#ECB367',   // Darker rust color for contrast
+  dark: '#2C3E50',       // Dark blue-gray for text and contrast
+  accent: '#D35400',     // Deep orange for emphasis
+  background: '#F5F6FA', // Light background
+  text: {
+    dark: '#2C3E50',     // Dark text
+    light: '#FFF',       // Light text
+    muted: '#7F8C8D'     // Muted text
+  }
+};
+
 // Dummy data
 const dummyData = {
   totalFlights: 50,
@@ -26,11 +40,11 @@ const dummyData = {
     {value: 20}, {value: 35}, {value: 15}, {value: 40}, {value: 30}
   ],
   terrainTypes: [
-    {value: 30, text: 'Forest', color: '#177AD5'},
-    {value: 25, text: 'Grassland', color: '#79D2DE'},
-    {value: 20, text: 'Mountain', color: '#ED6665'},
-    {value: 15, text: 'Desert', color: '#F0B775'},
-    {value: 10, text: 'Wetland', color: '#8F80E4'}
+    {value: 30, text: 'Forest', color: COLORS.primary},
+    {value: 25, text: 'Grassland', color: COLORS.secondary},
+    {value: 20, text: 'Mountain', color: COLORS.dark},
+    {value: 15, text: 'Desert', color: COLORS.accent},
+    {value: 10, text: 'Wetland', color: '#8B4513'}
   ],
   recentFlights: [
     {date: '2023-04-01', animals: 25, terrain: 'Forest', elevation: 110},
@@ -41,10 +55,10 @@ const dummyData = {
   ]
 };
 
-// Couldnt change the color of the bars in bar chart, so used this instead
+// Update colored animal data
 const coloredAnimalData = dummyData.animalCountPerFlight.map(item => ({
   ...item,
-  frontColor: '#FF4B2B'
+  frontColor: COLORS.secondary
 }));
 
 export default function DashboardScreen() {
@@ -108,7 +122,7 @@ export default function DashboardScreen() {
         .slice(-5)
         .map(flight => ({
           value: flight.intruder_detections,
-          frontColor: '#FF4B2B',
+          frontColor: COLORS.secondary,
           label: flight.flight_number,
           date: flight.flight_date, // Add date to the data
           onPress: (item: any, index: number, width: number) => {
@@ -139,27 +153,29 @@ export default function DashboardScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <MaterialCommunityIcons name="drone" size={24} color="white" />
-        <Text style={styles.headerText}>Flight Statistics Dashboard</Text>
+    <ScrollView style={[styles.container, { backgroundColor: COLORS.background }]}>
+      <View style={[styles.header, { backgroundColor: COLORS.secondary }]}>
+        <MaterialCommunityIcons name="drone" size={24} color={COLORS.text.dark} />
+        <Text style={[styles.headerText, { color: COLORS.text.dark }]}>
+          Flight Statistics Dashboard
+        </Text>
       </View>
 
       <View style={styles.summaryContainer}>
         <Text style={styles.sectionTitle}>Flight Summary</Text>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="drone" size={24} color="#177AD5" />
+            <MaterialCommunityIcons name="drone" size={24} color={COLORS.secondary} />
             <Text style={styles.summaryValue}>{summaryStats.totalFlights}</Text>
             <Text style={styles.summaryLabel}>Total Flights</Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="paw" size={24} color="#79D2DE" />
+            <MaterialCommunityIcons name="paw" size={24} color={COLORS.secondary} />
             <Text style={styles.summaryValue}>{summaryStats.totalAnimals}</Text>
             <Text style={styles.summaryLabel}>Animals Counted</Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="alert-circle" size={24} color="#ED6665" />
+            <MaterialCommunityIcons name="alert-circle" size={24} color={COLORS.secondary} />
             <Text style={styles.summaryValue}>{summaryStats.totalIntruders}</Text>
             <Text style={styles.summaryLabel}>Total Intruders</Text>
           </View>
@@ -176,22 +192,22 @@ export default function DashboardScreen() {
             <LineChart
               data={tahrTrend}
               hideRules
-              color="#177AD5"
+              color={COLORS.secondary}
               thickness={3}
-              dataPointsColor="#ED6665"
+              dataPointsColor={COLORS.primary}
               width={300}
               height={200}
-              startFillColor="#177AD5"
-              endFillColor="#177AD520"
+              startFillColor={COLORS.secondary}
+              endFillColor={`${COLORS.secondary}20`}
               startOpacity={0.9}
               endOpacity={0.2}
               initialSpacing={20}
               noOfSections={6}
               xAxisThickness={0}
               yAxisThickness={0}
-              yAxisColor="#177AD5"
-              xAxisColor="#177AD5"
-              xAxisLabelTextStyle={{ color: '#FF' }}
+              yAxisColor={COLORS.dark}
+              xAxisColor={COLORS.dark}
+              xAxisLabelTextStyle={{ color: COLORS.text.dark }}
               spacing={40}
             />
             <Text style={styles.xAxisLabel}>Flight Number</Text>
@@ -220,13 +236,14 @@ export default function DashboardScreen() {
                 hideRules
                 xAxisThickness={0}
                 yAxisThickness={0}
-                yAxisTextStyle={{color: '#000'}}
+                yAxisTextStyle={{ color: COLORS.text.dark }}
                 noOfSections={5}
                 maxValue={5}
                 width={300}
                 height={200}
-                xAxisLabelTextStyle={{color: '#000'}}
+                xAxisLabelTextStyle={{ color: COLORS.text.dark }}
                 yAxisLabelWidth={40}
+                frontColor={COLORS.secondary}
               />
               <Text style={styles.xAxisLabel}>Flight Number</Text>
             </View>
@@ -260,12 +277,12 @@ export default function DashboardScreen() {
               {
                 value: recentFlights.reduce((sum, flight) => sum + flight.tahr_count, 0),
                 text: 'Tahr',
-                color: '#177AD5'
+                color: COLORS.secondary
               },
               {
                 value: recentFlights.reduce((sum, flight) => sum + flight.intruder_detections, 0),
                 text: 'Intruders',
-                color: '#ED6665'
+                color: COLORS.primary
               }
             ]}
             donut
@@ -274,8 +291,8 @@ export default function DashboardScreen() {
           />
           <View style={styles.legend}>
             {[
-              { text: 'Tahr', color: '#177AD5' },
-              { text: 'Intruders', color: '#ED6665' }
+              { text: 'Tahr', color: COLORS.secondary },
+              { text: 'Intruders', color: COLORS.primary }
             ].map((item, index) => {
               const tahrCount = recentFlights.reduce((sum, flight) => sum + flight.tahr_count, 0);
               const intruderCount = recentFlights.reduce((sum, flight) => sum + flight.intruder_detections, 0);
@@ -308,7 +325,7 @@ export default function DashboardScreen() {
         </View>
         {recentFlights.map((flight, index) => (
           <View key={index} style={styles.flightItem}>
-            <MaterialCommunityIcons name="drone" size={24} color="#177AD5" />
+            <MaterialCommunityIcons name="drone" size={24} color={COLORS.secondary} />
             <View style={styles.flightInfo}>
               <Text style={styles.flightDate}>{new Date(flight.flight_date).toLocaleDateString()}</Text>
               <Text style={styles.flightDetail}>
@@ -328,17 +345,17 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: COLORS.background,
   },
   header: {
-    backgroundColor: '#FF4B2B',
+    backgroundColor: COLORS.secondary,
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerText: {
-    color: 'white',
+    color: COLORS.text.light,
     fontSize: 22,
     fontWeight: 'bold',
     marginLeft: 10,
@@ -347,7 +364,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    color: '#333',
+    color: COLORS.text.dark,
   },
   summaryContainer: {
     backgroundColor: 'white',
@@ -370,12 +387,12 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.text.dark,
     marginTop: 5,
   },
   summaryLabel: {
     fontSize: 12,
-    color: '#666',
+    color: COLORS.text.muted,
     marginTop: 5,
   },
   chartContainer: {
@@ -414,11 +431,11 @@ const styles = StyleSheet.create({
   flightDate: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.text.dark,
   },
   flightDetail: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.text.muted,
     marginTop: 3,
   },
   chartLegendContainer: {
@@ -442,7 +459,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 14,
-    color: '#333',
+    color: COLORS.text.dark,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -455,7 +472,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   showMoreText: {
-    color: '#FF4B2B',
+    color: COLORS.secondary,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -486,13 +503,13 @@ const styles = StyleSheet.create({
   },
   yAxisLabel: {
     transform: [{ rotate: '-90deg' }],
-    color: '#666',
+    color: COLORS.text.muted,
     width: 200,
     textAlign: 'center',
   },
   xAxisLabel: {
     textAlign: 'center',
-    color: '#666',
+    color: COLORS.text.muted,
     marginTop: 10,
     marginBottom: 10,
   },
