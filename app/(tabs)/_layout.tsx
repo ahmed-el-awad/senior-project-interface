@@ -1,5 +1,5 @@
-import { Drawer } from 'expo-router/drawer';
-import { useRouter } from 'expo-router';
+import { Drawer } from "expo-router/drawer";
+import { useRouter } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
@@ -12,10 +12,8 @@ export default function TabLayout() {
         options={{
           drawerLabel: "Home",
           title: "Home",
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="home" size={size} color={color} />
-          ),
-          drawerItemStyle: { display: 'none' }
+          drawerIcon: ({ color, size }) => <MaterialIcons name="home" size={size} color={color} />,
+          // drawerItemStyle: { display: "none" },
         }}
       />
       <Drawer.Screen
@@ -30,8 +28,8 @@ export default function TabLayout() {
         listeners={{
           drawerItemPress: (e) => {
             e.preventDefault();
-            router.push('/(tabs)/connectDrone');
-          }
+            router.push("/(tabs)/connectDrone");
+          },
         }}
       />
       <Drawer.Screen
@@ -42,7 +40,7 @@ export default function TabLayout() {
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="flight" size={size} color={color} />
           ),
-          drawerItemStyle: { display: 'none' }
+          drawerItemStyle: { display: "none" },
         }}
       />
       <Drawer.Screen

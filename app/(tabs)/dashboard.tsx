@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { LineChart, BarChart, PieChart } from 'react-native-gifted-charts';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { LineChart, BarChart, PieChart } from "react-native-gifted-charts";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 interface FlightData {
   id: number;
@@ -16,16 +16,16 @@ interface FlightData {
 
 // Define a consistent color palette at the top
 const COLORS = {
-  primary: '#A64724',     // Main orange color
-  secondary: '#ECB367',   // Darker rust color for contrast
-  dark: '#2C3E50',       // Dark blue-gray for text and contrast
-  accent: '#D35400',     // Deep orange for emphasis
-  background: '#F5F6FA', // Light background
+  primary: "#A64724", // Main orange color
+  secondary: "#ECB367", // Darker rust color for contrast
+  dark: "#2C3E50", // Dark blue-gray for text and contrast
+  accent: "#D35400", // Deep orange for emphasis
+  background: "#F5F6FA", // Light background
   text: {
-    dark: '#2C3E50',     // Dark text
-    light: '#FFF',       // Light text
-    muted: '#7F8C8D'     // Muted text
-  }
+    dark: "#2C3E50", // Dark text
+    light: "#FFF", // Light text
+    muted: "#7F8C8D", // Muted text
+  },
 };
 
 // Dummy data
@@ -33,32 +33,28 @@ const dummyData = {
   totalFlights: 50,
   averageElevation: 70,
   totalAnimals: 1250,
-  elevationTrend: [
-    {value: 60}, {value: 70}, {value: 110}, {value: 90}, {value: 80}
-  ],
-  animalCountPerFlight: [
-    {value: 20}, {value: 35}, {value: 15}, {value: 40}, {value: 30}
-  ],
+  elevationTrend: [{ value: 60 }, { value: 70 }, { value: 110 }, { value: 90 }, { value: 80 }],
+  animalCountPerFlight: [{ value: 20 }, { value: 35 }, { value: 15 }, { value: 40 }, { value: 30 }],
   terrainTypes: [
-    {value: 30, text: 'Forest', color: COLORS.primary},
-    {value: 25, text: 'Grassland', color: COLORS.secondary},
-    {value: 20, text: 'Mountain', color: COLORS.dark},
-    {value: 15, text: 'Desert', color: COLORS.accent},
-    {value: 10, text: 'Wetland', color: '#8B4513'}
+    { value: 30, text: "Forest", color: COLORS.primary },
+    { value: 25, text: "Grassland", color: COLORS.secondary },
+    { value: 20, text: "Mountain", color: COLORS.dark },
+    { value: 15, text: "Desert", color: COLORS.accent },
+    { value: 10, text: "Wetland", color: "#8B4513" },
   ],
   recentFlights: [
-    {date: '2023-04-01', animals: 25, terrain: 'Forest', elevation: 110},
-    {date: '2023-04-03', animals: 30, terrain: 'Grassland', elevation: 90},
-    {date: '2023-04-05', animals: 15, terrain: 'Mountain', elevation: 70},
-    {date: '2023-04-07', animals: 40, terrain: 'Forest', elevation: 100},
-    {date: '2023-04-09', animals: 20, terrain: 'Desert', elevation: 80},
-  ]
+    { date: "2023-04-01", animals: 25, terrain: "Forest", elevation: 110 },
+    { date: "2023-04-03", animals: 30, terrain: "Grassland", elevation: 90 },
+    { date: "2023-04-05", animals: 15, terrain: "Mountain", elevation: 70 },
+    { date: "2023-04-07", animals: 40, terrain: "Forest", elevation: 100 },
+    { date: "2023-04-09", animals: 20, terrain: "Desert", elevation: 80 },
+  ],
 };
 
 // Update colored animal data
-const coloredAnimalData = dummyData.animalCountPerFlight.map(item => ({
+const coloredAnimalData = dummyData.animalCountPerFlight.map((item) => ({
   ...item,
-  frontColor: COLORS.secondary
+  frontColor: COLORS.secondary,
 }));
 
 export default function DashboardScreen() {
@@ -71,11 +67,13 @@ export default function DashboardScreen() {
   });
   const [tahrTrend, setTahrTrend] = useState<{ value: number }[]>([]);
   const [recentFlights, setRecentFlights] = useState<FlightData[]>([]);
-  const [intruderTrend, setIntruderTrend] = useState<{ 
-    value: number, 
-    frontColor: string,
-    label: string 
-  }[]>([]);
+  const [intruderTrend, setIntruderTrend] = useState<
+    {
+      value: number;
+      frontColor: string;
+      label: string;
+    }[]
+  >([]);
 
   // Add new state for tooltip
   const [tooltipData, setTooltipData] = useState<{
@@ -90,21 +88,20 @@ export default function DashboardScreen() {
     try {
       const response = await axios.get(`${baseURL}/flight_data`);
       const flights: FlightData[] = response.data;
-      
+
       // Calculate summary statistics
       const totalFlights = flights.length;
-      const totalAnimals = flights.reduce((acc, flight) => 
-        acc + flight.tahr_count + flight.intruder_detections, 0);
-      const totalIntruders = flights.reduce((acc, flight) => 
-        acc + flight.intruder_detections, 0);
-      
+      const totalAnimals = flights.reduce(
+        (acc, flight) => acc + flight.tahr_count + flight.intruder_detections,
+        0
+      );
+      const totalIntruders = flights.reduce((acc, flight) => acc + flight.intruder_detections, 0);
+
       // Get last 5 flights for tahr trend (reversed to show newest last)
-      const recentTahrCounts = flights
-        .slice(-5)
-        .map(flight => ({
-          value: flight.tahr_count,
-          label: flight.flight_number
-        }));
+      const recentTahrCounts = flights.slice(-5).map((flight) => ({
+        value: flight.tahr_count,
+        label: flight.flight_number,
+      }));
 
       setTahrTrend(recentTahrCounts);
       setSummaryStats({
@@ -118,24 +115,22 @@ export default function DashboardScreen() {
       setRecentFlights(recent);
 
       // Get last 5 flights' intruder counts with flight numbers as labels
-      const recentIntruderCounts = flights
-        .slice(-5)
-        .map(flight => ({
-          value: flight.intruder_detections,
-          frontColor: COLORS.secondary,
-          label: flight.flight_number,
-          date: flight.flight_date, // Add date to the data
-          onPress: (item: any, index: number, width: number) => {
-            const xPos = (width * (index + 1)) - (width / 2);
-            setTooltipData({
-              visible: true,
-              date: flight.flight_date,
-              value: flight.intruder_detections,
-              x: xPos,
-              y: 200 - (flight.intruder_detections * 40), // Adjust based on chart height and scale
-            });
-          }
-        }));
+      const recentIntruderCounts = flights.slice(-5).map((flight) => ({
+        value: flight.intruder_detections,
+        frontColor: COLORS.secondary,
+        label: flight.flight_number,
+        date: flight.flight_date, // Add date to the data
+        onPress: (item: any, index: number, width: number) => {
+          const xPos = width * (index + 1) - width / 2;
+          setTooltipData({
+            visible: true,
+            date: flight.flight_date,
+            value: flight.intruder_detections,
+            x: xPos,
+            y: 200 - flight.intruder_detections * 40, // Adjust based on chart height and scale
+          });
+        },
+      }));
 
       setIntruderTrend(recentIntruderCounts);
     } catch (error) {
@@ -217,8 +212,8 @@ export default function DashboardScreen() {
 
       <View style={styles.chartContainer}>
         <Text style={styles.sectionTitle}>Intruder Detections per Flight</Text>
-        <TouchableOpacity 
-          activeOpacity={1} 
+        <TouchableOpacity
+          activeOpacity={1}
           onPress={handleBackgroundPress}
           style={styles.chartWrapper}
         >
@@ -249,21 +244,21 @@ export default function DashboardScreen() {
             </View>
           </View>
           {tooltipData && tooltipData.visible && (
-            <View style={[
-              styles.tooltip,
-              {
-                position: 'absolute',
-                left: tooltipData.x,
-                top: tooltipData.y,
-                transform: [{ translateX: -50 }, { translateY: -40 }]
-              }
-            ]}>
+            <View
+              style={[
+                styles.tooltip,
+                {
+                  position: "absolute",
+                  left: tooltipData.x,
+                  top: tooltipData.y,
+                  transform: [{ translateX: -50 }, { translateY: -40 }],
+                },
+              ]}
+            >
               <Text style={styles.tooltipText}>
                 {new Date(tooltipData.date).toLocaleDateString()}
               </Text>
-              <Text style={styles.tooltipText}>
-                Intruders: {tooltipData.value}
-              </Text>
+              <Text style={styles.tooltipText}>Intruders: {tooltipData.value}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -276,14 +271,14 @@ export default function DashboardScreen() {
             data={[
               {
                 value: recentFlights.reduce((sum, flight) => sum + flight.tahr_count, 0),
-                text: 'Tahr',
-                color: COLORS.secondary
+                text: "Tahr",
+                color: COLORS.secondary,
               },
               {
                 value: recentFlights.reduce((sum, flight) => sum + flight.intruder_detections, 0),
-                text: 'Intruders',
-                color: COLORS.primary
-              }
+                text: "Intruders",
+                color: COLORS.primary,
+              },
             ]}
             donut
             radius={80}
@@ -291,15 +286,18 @@ export default function DashboardScreen() {
           />
           <View style={styles.legend}>
             {[
-              { text: 'Tahr', color: COLORS.secondary },
-              { text: 'Intruders', color: COLORS.primary }
+              { text: "Tahr", color: COLORS.secondary },
+              { text: "Intruders", color: COLORS.primary },
             ].map((item, index) => {
               const tahrCount = recentFlights.reduce((sum, flight) => sum + flight.tahr_count, 0);
-              const intruderCount = recentFlights.reduce((sum, flight) => sum + flight.intruder_detections, 0);
+              const intruderCount = recentFlights.reduce(
+                (sum, flight) => sum + flight.intruder_detections,
+                0
+              );
               const total = tahrCount + intruderCount;
-              const count = item.text === 'Tahr' ? tahrCount : intruderCount;
-              const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
-              
+              const count = item.text === "Tahr" ? tahrCount : intruderCount;
+              const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0";
+
               return (
                 <View key={index} style={styles.legendItem}>
                   <View style={[styles.legendColor, { backgroundColor: item.color }]} />
@@ -316,8 +314,8 @@ export default function DashboardScreen() {
       <View style={styles.recentFlightsContainer}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Recent Flights</Text>
-          <TouchableOpacity 
-            onPress={() => router.push('/(tabs)/statistics')}
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/statistics")}
             style={styles.showMoreButton}
           >
             <Text style={styles.showMoreText}>Show more</Text>
@@ -327,7 +325,9 @@ export default function DashboardScreen() {
           <View key={index} style={styles.flightItem}>
             <MaterialCommunityIcons name="drone" size={24} color={COLORS.secondary} />
             <View style={styles.flightInfo}>
-              <Text style={styles.flightDate}>{new Date(flight.flight_date).toLocaleDateString()}</Text>
+              <Text style={styles.flightDate}>
+                {new Date(flight.flight_date).toLocaleDateString()}
+              </Text>
               <Text style={styles.flightDetail}>
                 Flight: {flight.flight_number} | Duration: {flight.flight_duration}min
               </Text>
@@ -350,24 +350,24 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.secondary,
     padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerText: {
     color: COLORS.text.light,
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 10,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
     color: COLORS.text.dark,
   },
   summaryContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
@@ -378,15 +378,15 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   summaryItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   summaryValue: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.text.dark,
     marginTop: 5,
   },
@@ -396,11 +396,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   chartContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   recentFlightsContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     margin: 15,
     padding: 20,
     borderRadius: 10,
@@ -419,10 +419,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   flightItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
     paddingVertical: 15,
   },
   flightInfo: {
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   },
   flightDate: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.text.dark,
   },
   flightDetail: {
@@ -439,16 +439,16 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   chartLegendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   legend: {
     marginLeft: 20,
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   legendColor: {
@@ -462,9 +462,9 @@ const styles = StyleSheet.create({
     color: COLORS.text.dark,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 15,
   },
   showMoreButton: {
@@ -474,48 +474,48 @@ const styles = StyleSheet.create({
   showMoreText: {
     color: COLORS.secondary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   tooltip: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     padding: 8,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   tooltipText: {
-    color: 'white',
+    color: "white",
     fontSize: 12,
   },
   axisLabels: {
-    width: '100%',
+    width: "100%",
     paddingHorizontal: 10,
   },
   chartWithLabels: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingLeft: 20,
   },
   yAxisLabelContainer: {
     width: 20,
     height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   yAxisLabel: {
-    transform: [{ rotate: '-90deg' }],
+    transform: [{ rotate: "-90deg" }],
     color: COLORS.text.muted,
     width: 200,
-    textAlign: 'center',
+    textAlign: "center",
   },
   xAxisLabel: {
-    textAlign: 'center',
+    textAlign: "center",
     color: COLORS.text.muted,
     marginTop: 10,
     marginBottom: 10,
   },
   chartWrapper: {
-    position: 'relative',
-    width: '100%',
-    alignItems: 'center',
+    position: "relative",
+    width: "100%",
+    alignItems: "center",
   },
 });
